@@ -158,7 +158,7 @@
 			ctm = CGPointMake( 0, round((viewBounds.size.height - badgeRect.size.height)/2) );
 			break;
 		case UITextAlignmentRight:
-			ctm = CGPointMake( (viewBounds.size.width - badgeRect.size.width), round((viewBounds.size.height - badgeRect.size.height)/2) );
+			ctm = CGPointMake( (viewBounds.size.width - badgeRect.size.width) - 10, round((viewBounds.size.height - badgeRect.size.height)/2) );
 			break;
 	}
 	
