@@ -207,14 +207,20 @@
             targetResponder = targetResponder.nextResponder;
             
             if (![targetResponder isKindOfClass:[UIViewController class]]) {
-                // uh oh
-                NSLog(@"Could not find MKSocialShareTableViewCell's owning view controller!");
-                return;
+                targetResponder = targetResponder.nextResponder;
+                
+                // in iOS 7, you have to go 3 deep.
+                if (![targetResponder isKindOfClass:[UIViewController class]]) {
+                    // uh oh
+                    NSLog(@"Could not find MKSocialShareTableViewCell's owning view controller!");
+                    return;
+                }
             }
         }
                   
         UIViewController* currentController = (UIViewController*)targetResponder;
-        [currentController presentModalViewController:socialController animated:YES];
+        
+        [currentController presentViewController:socialController animated:YES completion:NULL];
        
     }
 }

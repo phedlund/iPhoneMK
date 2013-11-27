@@ -355,7 +355,7 @@ NSString* const kSCANImageAndPositingAniamtionKey = @"imageAndPositionAnimation"
 
 - (void)animateWithCycleCount:(NSUInteger)inCycleCount withCompletionInvocation:(NSInvocation*)inInvocation finalStaticImage:(UIImage*)inFinalStaticImage {
     
-    if (![inInvocation argumentsRetained]) {
+    if (nil != inInvocation && ![inInvocation argumentsRetained]) {
         [inInvocation retainArguments];
     }
     
@@ -381,12 +381,14 @@ NSString* const kSCANImageAndPositingAniamtionKey = @"imageAndPositionAnimation"
 }
 
 - (void)resumeAnimation {
-    CFTimeInterval pausedTime = [self timeOffset];
-    self.speed = 1.0;
-    self.timeOffset = 0.0;
-    self.beginTime = 0.0;
-    CFTimeInterval timeSincePause = [self convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
-    self.beginTime = timeSincePause;
+    if ( 0.0 == self.speed ) {
+        CFTimeInterval pausedTime = [self timeOffset];
+        self.speed = 1.0;
+        self.timeOffset = 0.0;
+        self.beginTime = 0.0;
+        CFTimeInterval timeSincePause = [self convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
+        self.beginTime = timeSincePause;
+    }
 }
 
 
