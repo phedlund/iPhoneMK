@@ -9,6 +9,7 @@
 #import "AnimationLayerViewController.h"
 #import "MKSoundCoordinatedAnimationLayer.h"
 #import "AnimationConfigModel.h"
+#import "TouchBeepingAnimationView.h"
 
 @interface AnimationLayerViewController ()
 
@@ -23,6 +24,9 @@
     if (self) {
         self.title = @"Animation Layer";
         self.tabBarItem.image = [UIImage imageNamed:@"fourth"];
+        if ( [self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+            self.edgesForExtendedLayout = UIRectEdgeNone;
+        }
         
         _config = [[AnimationConfigModel alloc] init];
         
@@ -59,7 +63,7 @@
     
     _animationLayer.position = position; 
    
-    [self.animationAreaView.layer addSublayer:_animationLayer];
+    self.animationAreaView.animationLayer = _animationLayer;
     
   }
 

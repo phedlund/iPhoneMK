@@ -10,10 +10,13 @@
 #import "MKSwitchControlTableViewCell.h"
 #import "MKIconCheckmarkTableViewCell.h"
 #import "MKSocialShareTableViewCell.h"
+#import "MKParentalGate.h"
+#import "ParentalGateSuccessViewController.h"
 
 #define SECTIONID_MKSwitchControlTableViewCell  0
 #define SECTIONID_MKIconCheckmarkTableViewCell  1
-#define SECTIONID_MKSocialShareTableViewCell    2
+#define SECTIONID_MKSocialShareTableViewCell    3
+#define SECTIONID_MKParentalGate                2
 
 @interface TableViewCellsViewController ()
 
@@ -29,6 +32,9 @@
     if (self) {
         self.title = @"Table View Cells";
         self.tabBarItem.image = [UIImage imageNamed:@"third"];
+        if ( [self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+            self.edgesForExtendedLayout = UIRectEdgeNone;
+        }
     }
     return self;
 }
@@ -92,10 +98,10 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     if ( [MKSocialShareTableViewCell socialShareAvailable] ) {
-        return 3;
+        return 4;
     }
     else {
-        return 2;
+        return 3;
     }
 }
 
@@ -110,6 +116,10 @@
             break;
         case SECTIONID_MKSocialShareTableViewCell:
             return @"MKSocialShareTableViewCell";
+            break;
+        case SECTIONID_MKParentalGate:
+            return @"MKParentalGate";
+            break;
         default:
             return nil;
             break;
@@ -133,6 +143,9 @@
             else {
                 return 0;
             }
+            break;
+        case SECTIONID_MKParentalGate:
+            return 1;
             break;
         default:
             return 0;
@@ -201,6 +214,20 @@
         
         return cell;
     }
+    else if ( sectionID == SECTIONID_MKParentalGate ) {
+        static NSString* ParentGateCellIdentifier = @"ParentalGate";
+        
+        UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:ParentGateCellIdentifier];
+        
+        if ( nil == cell ) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ParentGateCellIdentifier];
+        }
+        
+        cell.textLabel.text = @"Parental Gate";
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        return cell;
+    }
     else {
         return nil;
     }
@@ -212,7 +239,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if ( [indexPath indexAtPosition:0] == 1 ) {
+    if ( [indexPath indexAtPosition:0] == SECTIONID_MKIconCheckmarkTableViewCell ) {
         [tableView deselectRowAtIndexPath:[tableView indexPathForSelectedRow] animated:NO];
         
         MKIconCheckmarkTableViewCell* cell = (MKIconCheckmarkTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
@@ -221,6 +248,14 @@
         
         [cell setNeedsDisplay];
 
+    }
+    else if ( [indexPath indexAtPosition:0] == SECTIONID_MKParentalGate ) {
+        MKParentalGateSuccessBlock success = ^{
+            ParentalGateSuccessViewController* vc = [[ParentalGateSuccessViewController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
+        };
+        
+        [MKParentalGate displayGateWithCurrentViewController:self successBlock:success failureBlock:NULL];
     }
 }
 
